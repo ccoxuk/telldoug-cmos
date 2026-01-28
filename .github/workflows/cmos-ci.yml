@@ -1,0 +1,79 @@
+name: CMOS CI
+
+on:
+  push:
+    paths:
+      - "**"
+      - ".github/workflows/cmos-ci.yml"
+  pull_request:
+    paths:
+      - "**"
+      - ".github/workflows/cmos-ci.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: telldoug
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      AUTH_SECRET: test_auth_secret
+      FLOOT_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/telldoug
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Postgres client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Wait for Postgres
+        run: |
+          for i in {1..20}; do
+            pg_isready -h localhost -U postgres && exit 0
+            sleep 2
+          done
+          echo "Postgres did not become ready" && exit 1
+
+      - name: Verify lockfile
+        run: |
+          if [ ! -f package-lock.json ]; then
+            echo "package-lock.json is required for CI. Run npm install and commit the lockfile." >&2
+            exit 1
+          fi
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Migrate
+        run: npm run migrate
+
+      - name: Migrate (idempotency check)
+        run: npm run migrate
+
+      - name: Privacy checks
+        run: npm run privacy:check
