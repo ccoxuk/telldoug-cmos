@@ -2,13 +2,7 @@ name: CMOS CI
 
 on:
   push:
-    paths:
-      - "**"
-      - ".github/workflows/cmos-ci.yml"
   pull_request:
-    paths:
-      - "**"
-      - ".github/workflows/cmos-ci.yml"
 
 jobs:
   build:
