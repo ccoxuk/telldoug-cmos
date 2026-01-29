@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch server.ts",
+    "start": "node --loader tsx server.ts",
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest",

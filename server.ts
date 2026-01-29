@@ -5,6 +5,15 @@ import { serve } from '@hono/node-server';
 
 const app = new Hono();
 
+app.get("_api/health", (c) => {
+  const version = process.env.APP_VERSION ?? process.env.npm_package_version ?? "unknown";
+  return c.json({
+    ok: true,
+    uptimeSec: Math.floor(process.uptime()),
+    version,
+  });
+});
+
 app.post('_api/auth/register',async c => {
   try {
     const { handle } = await import("./endpoints/auth/register_POST.js");
@@ -981,6 +990,7 @@ app.get("*", async (c, next) => {
   }
   return serveStatic({ path: "./dist/index.html" })(c, next);
 });
-serve({ fetch: app.fetch, port: 3333 });
-console.log("Running at http://localhost:3333")
+const port = Number(process.env.PORT) || 3333;
+serve({ fetch: app.fetch, port });
+console.log(`Running at http://localhost:${port}`)
       
