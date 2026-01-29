@@ -26,7 +26,7 @@ jobs:
       FLOOT_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/telldoug
     steps:
       - name: Main push guard
-        if: "${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}"
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         run: |
           echo "Head commit: ${GITHUB_SHA}"
           echo "All commits in push:"
