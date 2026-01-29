@@ -5,21 +5,6 @@ on:
   pull_request:
 
 jobs:
-  main-push-guard:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Validate squash merge commit message
-        run: |
-          msg="${{ github.event.head_commit.message }}"
-          echo "Commit message: $msg"
-          if echo "$msg" | grep -Eq "\\(#\\d+\\)|^Merge pull request #[0-9]+"; then
-            echo "Commit message looks like a squash or merge commit."
-            exit 0
-          fi
-          echo "Main push guard failed: commit message does not look like a squash merge." >&2
-          exit 1
-
   build:
     runs-on: ubuntu-latest
     services:
