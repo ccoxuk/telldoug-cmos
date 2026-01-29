@@ -39,6 +39,13 @@ cp env.example.json env.json
 - import page shows manual‑only MVP message
 - AI endpoints return 410 and AI UI is not reachable
 
+## Railway Staging (manual, MVP-safe)
+1. Build: `npm ci && npm run build`
+2. Start: `npm run start`
+3. One-off migrate: `npm run migrate`
+4. Smoke (automated): `npm run smoke:curl -- https://<staging-url>`
+5. Smoke (manual): follow the Required Smoke Steps above
+
 ## Definition of Done (MVP)
 - CI green (install/typecheck/lint/build/migrate)
 - privacy tests pass (no cross‑user leakage)

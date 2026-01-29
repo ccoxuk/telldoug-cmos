@@ -17,6 +17,8 @@ This is the single source of truth for deploy gates. Do not skip steps.
   - (Optional) Require linear history
 
 ## Staging (Railway project: telldoug-cmos-staging)
+**Gate:** Do not proceed to C2/C3/prod until staging smoke is green.
+
 ### Setup
 - [ ] Create Railway project from `ccoxuk/telldoug-cmos` (branch: `main`)
 - [ ] Add PostgreSQL
@@ -30,6 +32,7 @@ This is the single source of truth for deploy gates. Do not skip steps.
 - [ ] Run `npm run migrate` (Railway → Run Command)
 
 ### Smoke (must pass)
+- [ ] Run `npm run smoke:curl -- https://<staging-url>` (quick automated checks)
 - [ ] `GET /_api/health` returns `{ ok: true, ... }`
 - [ ] Auth: register → login → session → logout
 - [ ] Protected endpoint returns 401 when logged out

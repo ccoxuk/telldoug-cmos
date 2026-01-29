@@ -1,10 +1,6 @@
-# Career Management Operating System
-        
-I want to build TellDoug, a career OS where a user can track their people, skills, jobs, projects, institutions, and events in one place with a timeline and an AI panel to query their data.
+# TellDoug CMOS (MVP)
 
-Made with Floot.
-
-# Instructions
+TellDoug is a privacy-first, single-user career OS. It consolidates jobs, projects, skills, people, institutions, and events into a structured, queryable system with a timeline and deterministic “TellDoug” queries.
 
 For security reasons, `env.json` is not committed. Start by copying the example file:  
 
@@ -35,13 +31,23 @@ For the **Floot Database**, download your database content as a pg_dump from the
 
 - `OPENAI_API_KEY` (only if AI features are re-enabled post‑MVP)
 
-For other external services, retrieve your API keys and fill in the corresponding values.  
+## MVP behavior
+- AI and import endpoints are intentionally disabled (return 410).
+- Migrations are run manually (never on boot).
 
-Once everything is configured, you can build and start the service with:  
-
+## Local build/run
 ```
-npm install -g pnpm
-pnpm install
-pnpm vite build
-pnpm tsx server.ts
+npm ci
+npm run build
+npm run start
+```
+
+## Migrations (manual)
+```
+npm run migrate
+```
+
+## Smoke check
+```
+npm run smoke:curl -- https://<your-url>
 ```
