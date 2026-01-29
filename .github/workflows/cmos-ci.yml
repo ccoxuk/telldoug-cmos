@@ -25,6 +25,34 @@ jobs:
       AUTH_SECRET: test_auth_secret
       FLOOT_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/telldoug
     steps:
+      - name: Main push guard
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        run: |
+          echo "Head commit: ${GITHUB_SHA}"
+          echo "All commits in push:"
+          python - <<'PY'
+          import json, os
+          with open(os.environ["GITHUB_EVENT_PATH"]) as f:
+              data = json.load(f)
+          for c in data.get("commits", []):
+              print(f"- {c.get('id')} {c.get('message')}")
+          PY
+
+          msg="$(python - <<'PY'
+          import json, os
+          with open(os.environ["GITHUB_EVENT_PATH"]) as f:
+              data = json.load(f)
+          head = data.get("head_commit", {}) or {}
+          print(head.get("message", ""))
+          PY
+          )"
+          if echo "$msg" | grep -Eq "\\(#\\d+\\)|^Merge pull request #[0-9]+"; then
+            echo "Commit message looks like a squash or merge commit."
+            exit 0
+          fi
+          echo "Main push guard failed: commit message does not look like a squash merge." >&2
+          exit 1
+
       - name: Checkout
         uses: actions/checkout@v4
 
