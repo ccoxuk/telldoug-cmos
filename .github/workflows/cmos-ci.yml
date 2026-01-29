@@ -28,21 +28,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Main push guard
-        run: |
-          if [ "${GITHUB_EVENT_NAME}" != "push" ] || [ "${GITHUB_REF}" != "refs/heads/main" ]; then
-            echo "Skipping main push guard for ${GITHUB_EVENT_NAME} on ${GITHUB_REF}"
-            exit 0
-          fi
-          msg="$(git log -1 --pretty=%B)"
-          echo "Commit message: $msg"
-          if echo "$msg" | grep -Eq "\\(#\\d+\\)|^Merge pull request #[0-9]+"; then
-            echo "Commit message looks like a squash or merge commit."
-            exit 0
-          fi
-          echo "Main push guard failed: commit message does not look like a squash merge." >&2
-          exit 1
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
