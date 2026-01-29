@@ -11,12 +11,8 @@ jobs:
     steps:
       - name: Validate squash merge commit message
         run: |
-          echo "Head commit: ${{ github.event.head_commit.id }}"
-          echo "Head message: ${{ github.event.head_commit.message }}"
-          echo "All commits in push:"
-          printf '%s\n' '${{ toJson(github.event.commits) }}'
-
           msg="${{ github.event.head_commit.message }}"
+          echo "Commit message: $msg"
           if echo "$msg" | grep -Eq "\\(#\\d+\\)|^Merge pull request #[0-9]+"; then
             echo "Commit message looks like a squash or merge commit."
             exit 0
