@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch server.ts",
+    "start": "node --import tsx server.ts",
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest",
@@ -16,6 +17,7 @@
     "typecheck": "tsc --noEmit",
     "migrate": "tsx helpers/runMigrations.ts",
     "migrate:verify": "tsx helpers/verifyMigrations.ts",
+    "smoke:curl": "bash scripts/smoke-test.sh",
     "privacy:check": "tsx scripts/privacy-check.ts",
     "quality": "npm run typecheck && npm run lint && npm run test:run",
     "audit-pkg": "node audit-and-fix-package-json.js",
