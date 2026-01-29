@@ -71,17 +71,28 @@ jobs:
 
       - name: Health check
         run: |
-          PORT=3333 npm run start &
+          LOG_FILE=/tmp/server.log
+          PORT=3333 npm run start >"${LOG_FILE}" 2>&1 &
           SERVER_PID=$!
-          trap "kill ${SERVER_PID}" EXIT
-          for i in {1..20}; do
+          trap 'if kill -0 "${SERVER_PID}" 2>/dev/null; then kill "${SERVER_PID}"; fi' EXIT
+
+          for i in {1..60}; do
+            if ! kill -0 "${SERVER_PID}" 2>/dev/null; then
+              echo "Server exited before health check." >&2
+              echo "--- server log ---" >&2
+              cat "${LOG_FILE}" >&2 || true
+              exit 1
+            fi
             if curl -fsS http://localhost:3333/_api/health > /dev/null; then
               echo "Health check ok"
               exit 0
             fi
             sleep 1
           done
-          echo "Health check failed"
+
+          echo "Health check failed" >&2
+          echo "--- server log ---" >&2
+          cat "${LOG_FILE}" >&2 || true
           exit 1
 
       - name: Privacy checks
