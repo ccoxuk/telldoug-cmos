@@ -4,3 +4,6 @@ dist/
 .env
 .env.*
 *.log
+
+# Local env (do not commit)
+env.json

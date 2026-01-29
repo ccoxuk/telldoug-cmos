@@ -6,7 +6,13 @@ Made with Floot.
 
 # Instructions
 
-For security reasons, the `env.json` file is not pre-populated — you will need to generate or retrieve the values yourself.  
+For security reasons, `env.json` is not committed. Start by copying the example file:  
+
+```
+cp env.example.json env.json
+```
+
+Then fill in the values locally. `env.json` must never be committed.  
 
 For **JWT/Auth secrets**, generate a value with:  
 

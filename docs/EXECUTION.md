@@ -19,6 +19,13 @@ Run from repo root:
 Post‑MVP only (do not require for MVP builds):
 - `OPENAI_API_KEY`
 
+## Local env setup
+Copy the example file, then fill in values:
+```
+cp env.example.json env.json
+```
+`env.json` is local‑only and must not be committed.
+
 ## Required Smoke Steps
 - register → login → session → logout
 - create: Institution, Job, Project, Skill, Person, Event, Relationship
