@@ -26,13 +26,13 @@ export function OnboardingEmptyState() {
           <Link to="/jobs?new=1">Add your first job</Link>
         </Button>
         <Button asChild variant="outline">
-          <Link to="/projects?new=1">Add project</Link>
+          <Link to="/projects">Add project</Link>
         </Button>
         <Button asChild variant="outline">
-          <Link to="/people?new=1">Add person</Link>
+          <Link to="/people">Add person</Link>
         </Button>
         <Button asChild variant="outline">
-          <Link to="/institutions?new=1">Add institution</Link>
+          <Link to="/institutions">Add institution</Link>
         </Button>
       </div>
     </section>
