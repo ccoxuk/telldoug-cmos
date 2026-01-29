@@ -9,6 +9,36 @@ import { handleEndpointError } from "../../helpers/endpoint";
 export async function handle(request: Request) {
   try {
     const userId = requireUserId(request);
+
+    const jobCountQuery = db
+      .selectFrom("jobs")
+      .select(db.fn.count("id").as("count"))
+      .where("jobs.userId", "=", userId)
+      .executeTakeFirst();
+
+    const projectCountQuery = db
+      .selectFrom("projects")
+      .select(db.fn.count("id").as("count"))
+      .where("projects.userId", "=", userId)
+      .executeTakeFirst();
+
+    const skillCountQuery = db
+      .selectFrom("skills")
+      .select(db.fn.count("id").as("count"))
+      .where("skills.userId", "=", userId)
+      .executeTakeFirst();
+
+    const peopleCountQuery = db
+      .selectFrom("people")
+      .select(db.fn.count("id").as("count"))
+      .where("people.userId", "=", userId)
+      .executeTakeFirst();
+
+    const institutionCountQuery = db
+      .selectFrom("institutions")
+      .select(db.fn.count("id").as("count"))
+      .where("institutions.userId", "=", userId)
+      .executeTakeFirst();
     // 1. Stale Contacts
     // People with 90+ days since their last interaction OR no interactions
     const ninetyDaysAgo = subDays(new Date(), 90);
@@ -185,6 +215,11 @@ export async function handle(request: Request) {
 
     // Execute all queries
     const [
+      jobCountResult,
+      projectCountResult,
+      skillCountResult,
+      peopleCountResult,
+      institutionCountResult,
       staleContacts,
       productiveTypes,
       interactionStats,
@@ -203,6 +238,11 @@ export async function handle(request: Request) {
       contentThisYearResult,
       recentContent
     ] = await Promise.all([
+      jobCountQuery,
+      projectCountQuery,
+      skillCountQuery,
+      peopleCountQuery,
+      institutionCountQuery,
       staleContactsQuery.execute(),
       productiveInteractionTypesQuery.execute(),
       interactionCounts.execute(),
@@ -367,7 +407,16 @@ export async function handle(request: Request) {
       thisYearCount: Number(contentThisYearResult?.count || 0)
     };
 
+    const counts = {
+      jobs: Number(jobCountResult?.count || 0),
+      projects: Number(projectCountResult?.count || 0),
+      skills: Number(skillCountResult?.count || 0),
+      people: Number(peopleCountResult?.count || 0),
+      institutions: Number(institutionCountResult?.count || 0)
+    };
+
     const result: OutputType = {
+      counts,
       staleContacts: processedStaleContacts,
       productiveInteractionTypes: productiveTypes.map(t => ({
         type: t.type,

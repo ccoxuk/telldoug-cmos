@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Helmet } from "react-helmet";
+import { useSearchParams } from "react-router-dom";
 import { Plus, MoreVertical, Trash, Edit, MapPin, Calendar as CalendarIcon, Briefcase } from "lucide-react";
 import { useJobsList, useDeleteJob } from "../helpers/useJobsApi";
 import { Jobs } from "../helpers/schema";
@@ -27,14 +28,28 @@ export default function JobsPage() {
   const { highlightedId, scrollToElement, highlightClassName } = useHighlightFromSearch();
   const highlightRef = useRef<HTMLDivElement>(null);
 
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedJob, setSelectedJob] = useState<Selectable<Jobs> | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get("new") !== "1") {
+      return;
+    }
+
+    setSelectedJob(null);
+    setIsDialogOpen(true);
+
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete("new");
+    setSearchParams(nextParams, { replace: true });
+  }, [searchParams, setSearchParams]);
+
   useEffect(() => {
     if (highlightedId && highlightRef.current && !isLoading) {
       scrollToElement(highlightRef.current);
     }
   }, [highlightedId, isLoading, scrollToElement]);
-
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedJob, setSelectedJob] = useState<Selectable<Jobs> | null>(null);
 
   const handleAdd = () => {
     setSelectedJob(null);

@@ -70,7 +70,16 @@ export type ContentActivityData = {
   thisYearCount: number;
 };
 
+export type DashboardCounts = {
+  jobs: number;
+  projects: number;
+  skills: number;
+  people: number;
+  institutions: number;
+};
+
 export type OutputType = {
+  counts: DashboardCounts;
   staleContacts: StaleContact[];
   productiveInteractionTypes: ProductiveTypeStat[];
   topConnectors: TopConnector[];

@@ -12,6 +12,7 @@ import { DashboardFeedbackWidget } from "../components/DashboardFeedbackWidget";
 import { DashboardContentWidget } from "../components/DashboardContentWidget";
 import { ContentDraftDialog } from "../components/ContentDraftDialog";
 import { CareerNarrativeDialog } from "../components/CareerNarrativeDialog";
+import { OnboardingEmptyState } from "../components/OnboardingEmptyState";
 import { Button } from "../components/Button";
 import styles from "./dashboard.module.css";
 
@@ -47,6 +48,7 @@ export default function DashboardPage() {
     recentContent: [],
     thisYearCount: 0,
   };
+  const showOnboarding = !isFetching && data?.counts?.jobs === 0;
 
   return (
     <div className={styles.container}>
@@ -77,6 +79,8 @@ export default function DashboardPage() {
           </div>
         ) : null}
       </header>
+
+      {showOnboarding ? <OnboardingEmptyState /> : null}
 
       <div className={styles.widgetsGrid}>
         <DashboardReconnectWidget
