@@ -11,24 +11,12 @@ jobs:
     steps:
       - name: Validate squash merge commit message
         run: |
-          echo "Head commit: ${GITHUB_SHA}"
+          echo "Head commit: ${{ github.event.head_commit.id }}"
+          echo "Head message: ${{ github.event.head_commit.message }}"
           echo "All commits in push:"
-          python - <<'PY'
-          import json, os
-          with open(os.environ["GITHUB_EVENT_PATH"]) as f:
-              data = json.load(f)
-          for c in data.get("commits", []):
-              print(f"- {c.get('id')} {c.get('message')}")
-          PY
+          printf '%s\n' '${{ toJson(github.event.commits) }}'
 
-          msg="$(python - <<'PY'
-          import json, os
-          with open(os.environ["GITHUB_EVENT_PATH"]) as f:
-              data = json.load(f)
-          head = data.get("head_commit", {}) or {}
-          print(head.get("message", ""))
-          PY
-          )"
+          msg="${{ github.event.head_commit.message }}"
           if echo "$msg" | grep -Eq "\\(#\\d+\\)|^Merge pull request #[0-9]+"; then
             echo "Commit message looks like a squash or merge commit."
             exit 0
