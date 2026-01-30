@@ -95,5 +95,27 @@ jobs:
           cat "${LOG_FILE}" >&2 || true
           exit 1
 
+      - name: Auth smoke
+        run: |
+          LOG_FILE=/tmp/server.log
+          PORT=3333 npm run start >"${LOG_FILE}" 2>&1 &
+          SERVER_PID=$!
+          trap 'if kill -0 "${SERVER_PID}" 2>/dev/null; then kill "${SERVER_PID}"; fi' EXIT
+
+          for i in {1..60}; do
+            if ! kill -0 "${SERVER_PID}" 2>/dev/null; then
+              echo "Server exited before auth smoke." >&2
+              echo "--- server log ---" >&2
+              cat "${LOG_FILE}" >&2 || true
+              exit 1
+            fi
+            if curl -fsS http://localhost:3333/_api/health > /dev/null; then
+              break
+            fi
+            sleep 1
+          done
+
+          BASE_URL=http://localhost:3333 node scripts/auth-smoke.js
+
       - name: Privacy checks
         run: npm run privacy:check
