@@ -5,17 +5,26 @@ import { serve } from '@hono/node-server';
 
 const app = new Hono();
 
-async function forwardRequest(c: any) {
-  const method = c.req.method;
-  const hasBody = method !== "GET" && method !== "HEAD";
-  const bodyText = hasBody ? await c.req.text() : undefined;
-  const req = new Request(c.req.url, {
-    method,
-    headers: c.req.raw.headers,
-    body: bodyText,
+const forwardRequest = async (c: any) => {
+  const raw = c.req.raw as Request;
+
+  if (raw.method === "GET" || raw.method === "HEAD") {
+    return raw;
+  }
+
+  const buf = await c.req.arrayBuffer();
+  const headers = new Headers(raw.headers);
+
+  if (!headers.get("content-type")) {
+    headers.set("content-type", "application/json");
+  }
+
+  return new Request(raw.url, {
+    method: raw.method,
+    headers,
+    body: buf.byteLength ? Buffer.from(buf) : undefined,
   });
-  return req;
-}
+};
 
 
 app.get("/_api/health", (c) => {
