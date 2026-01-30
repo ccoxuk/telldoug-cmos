@@ -19,11 +19,20 @@ async function forwardRequest(c: any) {
 
 
 app.get("/_api/health", (c) => {
-  const version = process.env.APP_VERSION ?? process.env.npm_package_version ?? "unknown";
+  const version =
+    process.env.APP_VERSION ?? process.env.npm_package_version ?? "unknown";
+
+  const commit =
+    process.env.RAILWAY_GIT_COMMIT_SHA ??
+    process.env.GIT_COMMIT_SHA ??
+    process.env.VERCEL_GIT_COMMIT_SHA ??
+    "unknown";
+
   return c.json({
     ok: true,
     uptimeSec: Math.floor(process.uptime()),
     version,
+    commit,
   });
 });
 
