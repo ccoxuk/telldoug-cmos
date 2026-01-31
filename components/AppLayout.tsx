@@ -34,29 +34,63 @@ interface AppLayoutProps {
   children: React.ReactNode;
 }
 
+type NavItem = {
+  path: string;
+  label: string;
+  icon: React.ComponentType<{ size?: number | string }>;
+};
+
+type NavGroup = {
+  title: string;
+  items: NavItem[];
+};
+
 export default function AppLayout({ children }: AppLayoutProps) {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
-  const navItems = [
-    { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { path: "/timeline", label: "Timeline", icon: GitBranch },
-    { path: "/people", label: "People", icon: Users },
-    { path: "/interactions", label: "Interactions", icon: MessageSquare },
-    { path: "/feedback", label: "Feedback", icon: MessageCircle },
-    { path: "/projects", label: "Projects", icon: Briefcase },
-    { path: "/skills", label: "Skills", icon: Lightbulb },
-    { path: "/learning", label: "Learning", icon: BookOpen },
-    { path: "/jobs", label: "Jobs", icon: Building2 },
-    { path: "/compensation", label: "Compensation", icon: DollarSign },
-    { path: "/institutions", label: "Institutions", icon: GraduationCap },
-    { path: "/achievements", label: "Achievements", icon: Trophy },
-    { path: "/goals", label: "Goals", icon: Target },
-    { path: "/events", label: "Events", icon: CalendarDays },
-    { path: "/content", label: "Content", icon: FileEdit },
-    { path: "/relationships", label: "Relationships", icon: Network },
-    { path: "/import", label: "Import", icon: Upload },
+  const navGroups: NavGroup[] = [
+    {
+      title: "Overview",
+      items: [
+        { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+        { path: "/timeline", label: "Timeline", icon: GitBranch },
+      ],
+    },
+    {
+      title: "Career",
+      items: [
+        { path: "/jobs", label: "Jobs", icon: Building2 },
+        { path: "/projects", label: "Projects", icon: Briefcase },
+        { path: "/skills", label: "Skills", icon: Lightbulb },
+        { path: "/achievements", label: "Achievements", icon: Trophy },
+        { path: "/goals", label: "Goals", icon: Target },
+        { path: "/compensation", label: "Compensation", icon: DollarSign },
+      ],
+    },
+    {
+      title: "People & Relationships",
+      items: [
+        { path: "/people", label: "People", icon: Users },
+        { path: "/relationships", label: "Relationships", icon: Network },
+        { path: "/interactions", label: "Interactions", icon: MessageSquare },
+        { path: "/feedback", label: "Feedback", icon: MessageCircle },
+      ],
+    },
+    {
+      title: "Education & Institutions",
+      items: [
+        { path: "/institutions", label: "Institutions", icon: GraduationCap },
+        { path: "/learning", label: "Learning", icon: BookOpen },
+        { path: "/events", label: "Events", icon: CalendarDays },
+        { path: "/content", label: "Content", icon: FileEdit },
+      ],
+    },
+    {
+      title: "System",
+      items: [{ path: "/import", label: "Import", icon: Upload }],
+    },
   ];
 
   useEffect(() => {
@@ -128,21 +162,32 @@ export default function AppLayout({ children }: AppLayoutProps) {
         </div>
 
         <nav className={styles.nav}>
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = location.pathname === item.path;
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={`${styles.navItem} ${isActive ? styles.active : ""}`}
-                onClick={() => setIsMobileMenuOpen(false)}
+          {navGroups.map((group) => (
+            <div key={group.title} className={styles.navSection}>
+              <div
+                className={styles.navSectionTitle}
+                role="heading"
+                aria-level={2}
               >
-                <Icon size={20} />
-                <span>{item.label}</span>
-              </Link>
-            );
-          })}
+                {group.title}
+              </div>
+              {group.items.map((item) => {
+                const Icon = item.icon;
+                const isActive = location.pathname === item.path;
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className={`${styles.navItem} ${isActive ? styles.active : ""}`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <Icon size={20} />
+                    <span>{item.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          ))}
         </nav>
 
         <div className={styles.sidebarFooter}>
