@@ -78,8 +78,18 @@ export type DashboardCounts = {
   institutions: number;
 };
 
+export type WhatsNewItem = {
+  entityType: "job" | "project" | "skill" | "person" | "institution" | "event";
+  id: string;
+  title: string;
+  subtitle?: string | null;
+  updatedAt: Date;
+  url: string;
+};
+
 export type OutputType = {
   counts: DashboardCounts;
+  whatsNew: WhatsNewItem[];
   staleContacts: StaleContact[];
   productiveInteractionTypes: ProductiveTypeStat[];
   topConnectors: TopConnector[];

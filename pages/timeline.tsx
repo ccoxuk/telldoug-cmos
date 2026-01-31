@@ -59,10 +59,10 @@ export default function TimelinePage() {
               </p>
               <div className={styles.emptyActions}>
                 <Button asChild variant="outline">
-                  <Link to="/jobs">Add Job</Link>
+                  <Link to="/jobs?new=1">Add Job</Link>
                 </Button>
                 <Button asChild variant="outline">
-                  <Link to="/projects">Add Project</Link>
+                  <Link to="/projects?new=1">Add Project</Link>
                 </Button>
               </div>
             </div>

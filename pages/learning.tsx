@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Plus, Search, MoreVertical, Trash, Edit, Calendar as CalendarIcon, DollarSign } from "lucide-react";
 import { useLearningList, useDeleteLearning } from "../helpers/useLearningApi";
@@ -25,6 +25,7 @@ import { LearningDialog } from "../components/LearningDialog";
 import { useDebounce } from "../helpers/useDebounce";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { useLocation } from "react-router-dom";
 import styles from "./learning.module.css";
 
 export default function LearningPage() {
@@ -44,6 +45,7 @@ export default function LearningPage() {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedLearning, setSelectedLearning] = useState<Selectable<Learning> | null>(null);
+  const location = useLocation();
 
   const handleAdd = () => {
     setSelectedLearning(null);
@@ -54,6 +56,14 @@ export default function LearningPage() {
     setSelectedLearning(learning);
     setIsDialogOpen(true);
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("new") === "1") {
+      setSelectedLearning(null);
+      setIsDialogOpen(true);
+    }
+  }, [location.search]);
 
   const handleDelete = (id: string) => {
     if (window.confirm("Are you sure you want to delete this learning record?")) {
@@ -148,7 +158,10 @@ export default function LearningPage() {
           ))
         ) : data?.learning.length === 0 ? (
           <div className={styles.emptyState}>
-            <p>No learning records found. Add a learning record to get started!</p>
+            <p>No learning records found. Add a course or certification.</p>
+            <Button onClick={handleAdd}>
+              <Plus size={16} /> Add Learning
+            </Button>
           </div>
         ) : (
           data?.learning.map((item) => (

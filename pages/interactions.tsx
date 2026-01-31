@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Plus, MoreHorizontal, Trash, Edit } from "lucide-react";
 import { useInteractionsList, useDeleteInteraction } from "../helpers/useInteractionsApi";
@@ -23,6 +23,7 @@ import {
 } from "../components/Select";
 import { InteractionDialog } from "../components/InteractionDialog";
 import { toast } from "sonner";
+import { useLocation } from "react-router-dom";
 import styles from "./interactions.module.css";
 
 export default function InteractionsPage() {
@@ -39,6 +40,7 @@ export default function InteractionsPage() {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedInteraction, setSelectedInteraction] = useState<InteractionWithDetails | null>(null);
+  const location = useLocation();
 
   const handleAdd = () => {
     setSelectedInteraction(null);
@@ -49,6 +51,14 @@ export default function InteractionsPage() {
     setSelectedInteraction(interaction);
     setIsDialogOpen(true);
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("new") === "1") {
+      setSelectedInteraction(null);
+      setIsDialogOpen(true);
+    }
+  }, [location.search]);
 
   const handleDelete = (id: string) => {
     if (window.confirm("Are you sure you want to delete this interaction?")) {
@@ -153,7 +163,12 @@ export default function InteractionsPage() {
             ) : data?.interactions.length === 0 ? (
               <tr>
                 <td colSpan={7} className={styles.emptyState}>
-                  No interactions found. Log one to get started!
+                  <div className={styles.emptyStateContent}>
+                    <p>No interactions found. Log one to get started.</p>
+                    <Button onClick={handleAdd}>
+                      <Plus size={16} /> Log Interaction
+                    </Button>
+                  </div>
                 </td>
               </tr>
             ) : (

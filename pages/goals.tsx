@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Plus, MoreVertical, Trash, Edit } from "lucide-react";
 import { useGoalsList, useDeleteGoal } from "../helpers/useGoalsApi";
@@ -22,6 +22,7 @@ import {
 } from "../components/Select";
 import { GoalDialog } from "../components/GoalDialog";
 import { toast } from "sonner";
+import { useLocation } from "react-router-dom";
 import styles from "./goals.module.css";
 
 export default function GoalsPage() {
@@ -37,6 +38,7 @@ export default function GoalsPage() {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedGoal, setSelectedGoal] = useState<Selectable<Goals> | null>(null);
+  const location = useLocation();
 
   const handleAdd = () => {
     setSelectedGoal(null);
@@ -47,6 +49,14 @@ export default function GoalsPage() {
     setSelectedGoal(goal);
     setIsDialogOpen(true);
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("new") === "1") {
+      setSelectedGoal(null);
+      setIsDialogOpen(true);
+    }
+  }, [location.search]);
 
   const handleDelete = (id: string) => {
     if (window.confirm("Are you sure you want to delete this goal?")) {
@@ -142,7 +152,12 @@ export default function GoalsPage() {
             ) : data?.goals.length === 0 ? (
               <tr>
                 <td colSpan={6} className={styles.emptyState}>
-                  No goals found. Add a goal to get started!
+                  <div className={styles.emptyStateContent}>
+                    <p>No goals found. Add a goal to set direction.</p>
+                    <Button onClick={handleAdd}>
+                      <Plus size={16} /> Add Goal
+                    </Button>
+                  </div>
                 </td>
               </tr>
             ) : (

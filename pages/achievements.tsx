@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Plus, MoreVertical, Trash, Edit, ExternalLink } from "lucide-react";
 import { useAchievementsList, useDeleteAchievement } from "../helpers/useAchievementsApi";
@@ -22,6 +22,7 @@ import {
 } from "../components/Select";
 import { AchievementDialog } from "../components/AchievementDialog";
 import { toast } from "sonner";
+import { useLocation } from "react-router-dom";
 import styles from "./achievements.module.css";
 
 export default function AchievementsPage() {
@@ -35,6 +36,7 @@ export default function AchievementsPage() {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedAchievement, setSelectedAchievement] = useState<Selectable<Achievements> | null>(null);
+  const location = useLocation();
 
   const handleAdd = () => {
     setSelectedAchievement(null);
@@ -45,6 +47,14 @@ export default function AchievementsPage() {
     setSelectedAchievement(achievement);
     setIsDialogOpen(true);
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("new") === "1") {
+      setSelectedAchievement(null);
+      setIsDialogOpen(true);
+    }
+  }, [location.search]);
 
   const handleDelete = (id: string) => {
     if (window.confirm("Are you sure you want to delete this achievement?")) {
@@ -118,7 +128,12 @@ export default function AchievementsPage() {
             ) : data?.achievements.length === 0 ? (
               <tr>
                 <td colSpan={7} className={styles.emptyState}>
-                  No achievements found. Add an achievement to get started!
+                  <div className={styles.emptyStateContent}>
+                    <p>No achievements found. Add one to capture wins.</p>
+                    <Button onClick={handleAdd}>
+                      <Plus size={16} /> Add Achievement
+                    </Button>
+                  </div>
                 </td>
               </tr>
             ) : (

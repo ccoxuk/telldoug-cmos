@@ -26,6 +26,7 @@ import { useDebounce } from "../helpers/useDebounce";
 import { useHighlightFromSearch } from "../helpers/useHighlightFromSearch";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { useLocation } from "react-router-dom";
 import styles from "./content.module.css";
 
 export default function ContentPage() {
@@ -52,6 +53,7 @@ export default function ContentPage() {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedContent, setSelectedContent] = useState<Selectable<Content> | null>(null);
+  const location = useLocation();
 
   const handleAdd = () => {
     setSelectedContent(null);
@@ -62,6 +64,14 @@ export default function ContentPage() {
     setSelectedContent(content);
     setIsDialogOpen(true);
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("new") === "1") {
+      setSelectedContent(null);
+      setIsDialogOpen(true);
+    }
+  }, [location.search]);
 
   const handleDelete = (id: string) => {
     if (window.confirm("Are you sure you want to delete this content?")) {
@@ -134,7 +144,10 @@ export default function ContentPage() {
           ))
         ) : data?.content.length === 0 ? (
           <div className={styles.emptyState}>
-            <p>No content found. Add content to get started!</p>
+            <p>No content found. Add a post or publication.</p>
+            <Button onClick={handleAdd}>
+              <Plus size={16} /> Add Content
+            </Button>
           </div>
         ) : (
           data?.content.map((item) => (

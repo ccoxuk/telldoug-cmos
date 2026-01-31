@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Plus, MoreVertical, Trash, Edit } from "lucide-react";
 import { useCompensationList, useDeleteCompensation } from "../helpers/useCompensationApi";
@@ -14,6 +14,7 @@ import {
 } from "../components/DropdownMenu";
 import { CompensationDialog } from "../components/CompensationDialog";
 import { toast } from "sonner";
+import { useLocation } from "react-router-dom";
 import styles from "./compensation.module.css";
 
 export default function CompensationPage() {
@@ -22,6 +23,7 @@ export default function CompensationPage() {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedCompensation, setSelectedCompensation] = useState<Selectable<Compensation> | null>(null);
+  const location = useLocation();
 
   const handleAdd = () => {
     setSelectedCompensation(null);
@@ -32,6 +34,14 @@ export default function CompensationPage() {
     setSelectedCompensation(compensation);
     setIsDialogOpen(true);
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("new") === "1") {
+      setSelectedCompensation(null);
+      setIsDialogOpen(true);
+    }
+  }, [location.search]);
 
   const handleDelete = (id: string) => {
     if (window.confirm("Are you sure you want to delete this compensation entry?")) {
@@ -95,7 +105,12 @@ export default function CompensationPage() {
             ) : data?.compensation.length === 0 ? (
               <tr>
                 <td colSpan={7} className={styles.emptyState}>
-                  No compensation records found. Add a record to get started!
+                  <div className={styles.emptyStateContent}>
+                    <p>No compensation records found. Track your packages here.</p>
+                    <Button onClick={handleAdd}>
+                      <Plus size={16} /> Add Compensation
+                    </Button>
+                  </div>
                 </td>
               </tr>
             ) : (

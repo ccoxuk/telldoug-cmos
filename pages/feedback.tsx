@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Plus, MoreVertical, Trash, Edit } from "lucide-react";
 import { useFeedbackList, useDeleteFeedback } from "../helpers/useFeedbackApi";
@@ -23,6 +23,7 @@ import {
 } from "../components/Select";
 import { FeedbackDialog } from "../components/FeedbackDialog";
 import { toast } from "sonner";
+import { useLocation } from "react-router-dom";
 import styles from "./feedback.module.css";
 
 export default function FeedbackPage() {
@@ -39,6 +40,7 @@ export default function FeedbackPage() {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedFeedback, setSelectedFeedback] = useState<Selectable<Feedback> | null>(null);
+  const location = useLocation();
 
   const handleAdd = () => {
     setSelectedFeedback(null);
@@ -49,6 +51,14 @@ export default function FeedbackPage() {
     setSelectedFeedback(feedback);
     setIsDialogOpen(true);
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("new") === "1") {
+      setSelectedFeedback(null);
+      setIsDialogOpen(true);
+    }
+  }, [location.search]);
 
   const handleDelete = (id: string) => {
     if (window.confirm("Are you sure you want to delete this feedback?")) {
@@ -134,7 +144,12 @@ export default function FeedbackPage() {
             ) : data?.feedback.length === 0 ? (
               <tr>
                 <td colSpan={6} className={styles.emptyState}>
-                  No feedback found. Add some feedback to get started!
+                  <div className={styles.emptyStateContent}>
+                    <p>No feedback found. Capture insight to grow faster.</p>
+                    <Button onClick={handleAdd}>
+                      <Plus size={16} /> Add Feedback
+                    </Button>
+                  </div>
                 </td>
               </tr>
             ) : (

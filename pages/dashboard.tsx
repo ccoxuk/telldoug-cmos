@@ -10,6 +10,7 @@ import { DashboardGoalsWidget } from "../components/DashboardGoalsWidget";
 import { DashboardSkillsGrowthWidget } from "../components/DashboardSkillsGrowthWidget";
 import { DashboardFeedbackWidget } from "../components/DashboardFeedbackWidget";
 import { DashboardContentWidget } from "../components/DashboardContentWidget";
+import { DashboardWhatsNewWidget } from "../components/DashboardWhatsNewWidget";
 import { ContentDraftDialog } from "../components/ContentDraftDialog";
 import { CareerNarrativeDialog } from "../components/CareerNarrativeDialog";
 import { Button } from "../components/Button";
@@ -18,6 +19,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../components/DropdownMenu";
 import styles from "./dashboard.module.css";
@@ -34,6 +36,7 @@ export default function DashboardPage() {
   const topConnectors = data?.topConnectors || [];
   const recentInteractions = data?.recentActivity.recentInteractions || [];
   const upcomingEvents = data?.recentActivity.upcomingEvents || [];
+  const whatsNew = data?.whatsNew || [];
 
   // New data extractions
   const goalsProgress = data?.goalsProgress || [];
@@ -101,6 +104,28 @@ export default function DashboardPage() {
                 <DropdownMenuItem asChild>
                   <Link to="/relationships?new=1">Relationship</Link>
                 </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to="/goals?new=1">Goal</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/achievements?new=1">Achievement</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/learning?new=1">Learning</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/interactions?new=1">Interaction</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/feedback?new=1">Feedback</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/content?new=1">Content</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/compensation?new=1">Compensation</Link>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : null}
@@ -163,10 +188,7 @@ export default function DashboardPage() {
       </div>
 
       <div className={styles.widgetsGrid}>
-        <DashboardGoalsWidget
-          goalsProgress={goalsProgress}
-          isLoading={isFetching}
-        />
+        <DashboardWhatsNewWidget items={whatsNew} isLoading={isFetching} />
         <DashboardSkillsGrowthWidget
           skillsGrowth={skillsGrowth}
           isLoading={isFetching}
@@ -176,8 +198,8 @@ export default function DashboardPage() {
           upcomingEvents={upcomingEvents}
           isLoading={isFetching}
         />
-        <DashboardReconnectWidget
-          staleContacts={staleContacts}
+        <DashboardGoalsWidget
+          goalsProgress={goalsProgress}
           isLoading={isFetching}
         />
       </div>
@@ -187,6 +209,10 @@ export default function DashboardPage() {
         <div className={styles.widgetsGrid}>
           <DashboardTopConnectorsWidget
             topConnectors={topConnectors}
+            isLoading={isFetching}
+          />
+          <DashboardReconnectWidget
+            staleContacts={staleContacts}
             isLoading={isFetching}
           />
           <DashboardProductiveInteractionsWidget

@@ -183,6 +183,48 @@ export async function handle(request: Request) {
       .limit(5)
       .execute();
 
+    const jobsWhatsNewQuery = db.selectFrom('jobs')
+      .select(['id', 'title', 'company', 'updatedAt'])
+      .where('jobs.userId', '=', userId)
+      .orderBy('updatedAt', 'desc')
+      .limit(5)
+      .execute();
+
+    const projectsWhatsNewQuery = db.selectFrom('projects')
+      .select(['id', 'name', 'status', 'updatedAt'])
+      .where('projects.userId', '=', userId)
+      .orderBy('updatedAt', 'desc')
+      .limit(5)
+      .execute();
+
+    const skillsWhatsNewQuery = db.selectFrom('skills')
+      .select(['id', 'name', 'category', 'updatedAt'])
+      .where('skills.userId', '=', userId)
+      .orderBy('updatedAt', 'desc')
+      .limit(5)
+      .execute();
+
+    const peopleWhatsNewQuery = db.selectFrom('people')
+      .select(['id', 'name', 'company', 'role', 'updatedAt'])
+      .where('people.userId', '=', userId)
+      .orderBy('updatedAt', 'desc')
+      .limit(5)
+      .execute();
+
+    const institutionsWhatsNewQuery = db.selectFrom('institutions')
+      .select(['id', 'name', 'type', 'updatedAt'])
+      .where('institutions.userId', '=', userId)
+      .orderBy('updatedAt', 'desc')
+      .limit(5)
+      .execute();
+
+    const eventsWhatsNewQuery = db.selectFrom('events')
+      .select(['id', 'title', 'eventType', 'updatedAt'])
+      .where('events.userId', '=', userId)
+      .orderBy('updatedAt', 'desc')
+      .limit(5)
+      .execute();
+
     const jobsCountQuery = db.selectFrom('jobs')
       .select(db.fn.count('id').as('count'))
       .where('jobs.userId', '=', userId)
@@ -227,6 +269,12 @@ export async function handle(request: Request) {
       contentByType,
       contentThisYearResult,
       recentContent,
+      jobsWhatsNew,
+      projectsWhatsNew,
+      skillsWhatsNew,
+      peopleWhatsNew,
+      institutionsWhatsNew,
+      eventsWhatsNew,
       jobsCountResult,
       projectsCountResult,
       skillsCountResult,
@@ -250,12 +298,71 @@ export async function handle(request: Request) {
       contentByTypeQuery,
       contentThisYearQuery,
       recentContentQuery,
+      jobsWhatsNewQuery,
+      projectsWhatsNewQuery,
+      skillsWhatsNewQuery,
+      peopleWhatsNewQuery,
+      institutionsWhatsNewQuery,
+      eventsWhatsNewQuery,
       jobsCountQuery,
       projectsCountQuery,
       skillsCountQuery,
       peopleCountQuery,
       institutionsCountQuery
     ]);
+
+    const whatsNew = [
+      ...jobsWhatsNew.map(j => ({
+        entityType: 'job' as const,
+        id: j.id,
+        title: j.title,
+        subtitle: j.company,
+        updatedAt: new Date(j.updatedAt),
+        url: `/jobs?id=${j.id}`
+      })),
+      ...projectsWhatsNew.map(p => ({
+        entityType: 'project' as const,
+        id: p.id,
+        title: p.name,
+        subtitle: p.status,
+        updatedAt: new Date(p.updatedAt),
+        url: `/projects?id=${p.id}`
+      })),
+      ...skillsWhatsNew.map(s => ({
+        entityType: 'skill' as const,
+        id: s.id,
+        title: s.name,
+        subtitle: s.category,
+        updatedAt: new Date(s.updatedAt),
+        url: `/skills?id=${s.id}`
+      })),
+      ...peopleWhatsNew.map(p => ({
+        entityType: 'person' as const,
+        id: p.id,
+        title: p.name,
+        subtitle: p.company || p.role,
+        updatedAt: new Date(p.updatedAt),
+        url: `/people?id=${p.id}`
+      })),
+      ...institutionsWhatsNew.map(i => ({
+        entityType: 'institution' as const,
+        id: i.id,
+        title: i.name,
+        subtitle: i.type,
+        updatedAt: new Date(i.updatedAt),
+        url: `/institutions?id=${i.id}`
+      })),
+      ...eventsWhatsNew.map(e => ({
+        entityType: 'event' as const,
+        id: e.id,
+        title: e.title,
+        subtitle: e.eventType,
+        updatedAt: new Date(e.updatedAt),
+        url: `/events?id=${e.id}`
+      }))
+    ]
+      .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
+      .slice(0, 5);
 
     // Process Stale Contacts
     const processedStaleContacts = staleContacts.map(c => {
@@ -410,6 +517,7 @@ export async function handle(request: Request) {
         people: Number(peopleCountResult?.count || 0),
         institutions: Number(institutionsCountResult?.count || 0)
       },
+      whatsNew,
       staleContacts: processedStaleContacts,
       productiveInteractionTypes: productiveTypes.map(t => ({
         type: t.type,

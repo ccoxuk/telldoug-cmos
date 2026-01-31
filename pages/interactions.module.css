@@ -133,6 +133,13 @@
   color: var(--muted-foreground);
 }
 
+.emptyStateContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  align-items: center;
+}
+
 .skeletonCell {
   display: flex;
   align-items: center;
