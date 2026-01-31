@@ -23,5 +23,5 @@ This is the canonical, repeatable staging setup.
 - Run Command: `npm run migrate`
 
 ## Verification
-1. Automated: `npm run smoke:curl -- https://<staging-url>`
+1. Automated: `npm run smoke:full -- https://<staging-url>`
 2. Manual: follow `docs/RELEASE_CHECKLIST.md` smoke section

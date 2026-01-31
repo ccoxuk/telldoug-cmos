@@ -32,7 +32,7 @@ This is the single source of truth for deploy gates. Do not skip steps.
 - [ ] Run `npm run migrate` (Railway → Run Command)
 
 ### Smoke (must pass)
-- [ ] Run `npm run smoke:curl -- https://<staging-url>` (quick automated checks)
+- [ ] Run `npm run smoke:full -- https://<staging-url>` (auth + curl + CRUD)
 - [ ] `GET /_api/health` returns `{ ok: true, ... }`
 - [ ] Auth: register → login → session → logout
 - [ ] Protected endpoint returns 401 when logged out
@@ -60,6 +60,7 @@ This is the single source of truth for deploy gates. Do not skip steps.
 - [ ] Run `npm run migrate` (one-off)
 
 ### Smoke (same as staging)
+- [ ] Run `npm run smoke:full -- https://<prod-url>`
 - [ ] Health, auth, CRUD, dashboard, timeline, search, TellDoug, MVP compliance
 
 ## Closeout

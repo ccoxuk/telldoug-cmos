@@ -51,3 +51,8 @@ npm run migrate
 ```
 npm run smoke:curl -- https://<your-url>
 ```
+
+## Full smoke gate (auth + curl + CRUD)
+```
+npm run smoke:full -- https://<your-url>
+```

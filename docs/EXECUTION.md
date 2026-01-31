@@ -43,7 +43,7 @@ cp env.example.json env.json
 1. Build: `npm ci && npm run build`
 2. Start: `npm run start`
 3. One-off migrate: `npm run migrate`
-4. Smoke (automated): `npm run smoke:curl -- https://<staging-url>`
+4. Smoke (automated): `npm run smoke:full -- https://<staging-url>`
 5. Smoke (manual): follow the Required Smoke Steps above
 
 ## Definition of Done (MVP)
