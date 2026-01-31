@@ -26,6 +26,14 @@
   margin: 0 auto;
 }
 
+.filters {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-3);
+  margin-top: var(--spacing-6);
+  flex-wrap: wrap;
+}
+
 .timelineContainer {
   position: relative;
 }
@@ -110,10 +118,16 @@
   display: flex;
   justify-content: center;
   gap: var(--spacing-3);
+  flex-wrap: wrap;
 }
 
 /* Mobile Responsive */
 @media (max-width: 640px) {
+  .filters {
+    width: 100%;
+    justify-content: center;
+  }
+
   .yearSection {
     grid-template-columns: 1fr;
     gap: var(--spacing-2);

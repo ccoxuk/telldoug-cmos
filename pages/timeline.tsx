@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Helmet } from "react-helmet";
 import { useTimelineData } from "../helpers/useTimelineApi";
 import { TimelineItem as TimelineItemType } from "../endpoints/timeline/data_GET.schema";
@@ -14,11 +14,32 @@ export default function TimelinePage() {
   const [hoveredPersonId, setHoveredPersonId] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<TimelineItemType | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [filter, setFilter] = useState<"professional" | "academic" | "all">("professional");
 
   const handleItemClick = (item: TimelineItemType) => {
     setSelectedItem(item);
     setIsModalOpen(true);
   };
+
+  const filteredYears = useMemo(() => {
+    if (!data?.years) return [];
+    if (filter === "all") return data.years;
+
+    const isProfessional = (type: TimelineItemType["type"]) =>
+      ["job", "project", "compensation", "achievement", "feedback", "goal", "content", "event"].includes(type);
+
+    const isAcademic = (type: TimelineItemType["type"]) =>
+      ["institution", "learning"].includes(type);
+
+    return data.years
+      .map((yearGroup) => ({
+        ...yearGroup,
+        items: yearGroup.items.filter((item) =>
+          filter === "professional" ? isProfessional(item.type) : isAcademic(item.type)
+        ),
+      }))
+      .filter((yearGroup) => yearGroup.items.length > 0);
+  }, [data?.years, filter]);
 
   return (
     <div className={styles.container}>
@@ -31,6 +52,26 @@ export default function TimelinePage() {
         <p className={styles.subtitle}>
           Visualize your professional journey through jobs, projects, events, and education.
         </p>
+        <div className={styles.filters}>
+          <Button
+            variant={filter === "professional" ? "default" : "outline"}
+            onClick={() => setFilter("professional")}
+          >
+            Professional
+          </Button>
+          <Button
+            variant={filter === "academic" ? "default" : "outline"}
+            onClick={() => setFilter("academic")}
+          >
+            Academic
+          </Button>
+          <Button
+            variant={filter === "all" ? "default" : "outline"}
+            onClick={() => setFilter("all")}
+          >
+            All
+          </Button>
+        </div>
       </header>
 
       <div className={styles.timelineContainer}>
@@ -49,13 +90,13 @@ export default function TimelinePage() {
               </div>
             ))}
           </div>
-        ) : !data?.years || data.years.length === 0 ? (
+        ) : !data?.years || filteredYears.length === 0 ? (
           // Empty State
           <div className={styles.emptyState}>
             <div className={styles.emptyContent}>
-              <h3>Your career timeline is empty</h3>
+              <h3>Your timeline is empty for this view</h3>
               <p>
-                Start by adding jobs, projects, events, or education to build your timeline.
+                Add jobs, projects, education, or events to populate your timeline.
               </p>
               <div className={styles.emptyActions}>
                 <Button asChild variant="outline">
@@ -64,13 +105,16 @@ export default function TimelinePage() {
                 <Button asChild variant="outline">
                   <Link to="/projects?new=1">Add Project</Link>
                 </Button>
+                <Button asChild variant="outline">
+                  <Link to="/institutions?new=1">Add Institution</Link>
+                </Button>
               </div>
             </div>
           </div>
         ) : (
           // Timeline Content
           <div className={styles.timeline}>
-            {data.years.map((yearGroup) => (
+            {filteredYears.map((yearGroup) => (
               <div key={yearGroup.year} className={styles.yearSection}>
                 <div className={styles.yearColumn}>
                   <span className={styles.yearLabel}>{yearGroup.year}</span>
