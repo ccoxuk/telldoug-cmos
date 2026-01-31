@@ -18,6 +18,7 @@ import { SkillDialog } from "../components/SkillDialog";
 import { useDebounce } from "../helpers/useDebounce";
 import { useHighlightFromSearch } from "../helpers/useHighlightFromSearch";
 import { toast } from "sonner";
+import { useLocation } from "react-router-dom";
 import styles from "./skills.module.css";
 
 export default function SkillsPage() {
@@ -37,6 +38,7 @@ export default function SkillsPage() {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedSkill, setSelectedSkill] = useState<Selectable<Skills> | null>(null);
+  const location = useLocation();
 
   const handleAdd = () => {
     setSelectedSkill(null);
@@ -47,6 +49,14 @@ export default function SkillsPage() {
     setSelectedSkill(skill);
     setIsDialogOpen(true);
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("new") === "1") {
+      setSelectedSkill(null);
+      setIsDialogOpen(true);
+    }
+  }, [location.search]);
 
   const handleDelete = (id: string) => {
     if (window.confirm("Are you sure you want to delete this skill?")) {
@@ -111,7 +121,10 @@ export default function SkillsPage() {
           ))
         ) : data?.skills.length === 0 ? (
           <div className={styles.emptyState}>
-            <p>No skills found. Add a skill to get started!</p>
+            <p>No skills found. Add skills to build evidence.</p>
+            <Button onClick={handleAdd}>
+              <Plus size={16} /> Add Skill
+            </Button>
           </div>
         ) : (
           data?.skills.map((skill) => (

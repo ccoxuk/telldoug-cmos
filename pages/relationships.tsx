@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Plus, MoreHorizontal, Trash, Edit, ArrowRight } from "lucide-react";
 import { useRelationshipsList, useDeleteRelationship } from "../helpers/useRelationshipsApi";
@@ -28,6 +28,7 @@ import { useSkillsList } from "../helpers/useSkillsApi";
 import { useJobsList } from "../helpers/useJobsApi";
 import { useInstitutionsList } from "../helpers/useInstitutionsApi";
 import { useEventsList } from "../helpers/useEventsApi";
+import { useLocation } from "react-router-dom";
 import styles from "./relationships.module.css";
 
 export default function RelationshipsPage() {
@@ -37,6 +38,7 @@ export default function RelationshipsPage() {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedRelationship, setSelectedRelationship] = useState<Selectable<Relationships> | null>(null);
+  const location = useLocation();
 
   // Fetch all entities to resolve names
   // In a real app, this would be handled by the backend returning joined data or a dedicated lookup endpoint
@@ -71,6 +73,14 @@ export default function RelationshipsPage() {
     setSelectedRelationship(rel);
     setIsDialogOpen(true);
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("new") === "1") {
+      setSelectedRelationship(null);
+      setIsDialogOpen(true);
+    }
+  }, [location.search]);
 
   const handleDelete = (id: string) => {
     if (window.confirm("Are you sure you want to delete this relationship?")) {
@@ -144,7 +154,12 @@ export default function RelationshipsPage() {
             ) : data?.relationships.length === 0 ? (
               <tr>
                 <td colSpan={5} className={styles.emptyState}>
-                  No relationships found.
+                  <div className={styles.emptyStateContent}>
+                    <p>No relationships found. Connect people, projects, and events.</p>
+                    <Button onClick={handleAdd}>
+                      <Plus size={16} /> Add Relationship
+                    </Button>
+                  </div>
                 </td>
               </tr>
             ) : (

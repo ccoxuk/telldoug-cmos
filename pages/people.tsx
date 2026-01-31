@@ -20,6 +20,7 @@ import { MeetingBriefDialog } from "../components/MeetingBriefDialog";
 import { useDebounce } from "../helpers/useDebounce";
 import { useHighlightFromSearch } from "../helpers/useHighlightFromSearch";
 import { toast } from "sonner";
+import { useLocation } from "react-router-dom";
 import styles from "./people.module.css";
 
 const AI_FEATURES_ENABLED = false;
@@ -43,6 +44,7 @@ export default function PeoplePage() {
   const [selectedPerson, setSelectedPerson] = useState<Selectable<People> | null>(
     null,
   );
+  const location = useLocation();
 
   // Briefing Dialog State
   const [isBriefDialogOpen, setIsBriefDialogOpen] = useState(false);
@@ -57,6 +59,14 @@ export default function PeoplePage() {
     setSelectedPerson(person);
     setIsDialogOpen(true);
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("new") === "1") {
+      setSelectedPerson(null);
+      setIsDialogOpen(true);
+    }
+  }, [location.search]);
 
   const handleBrief = (person: Selectable<People>) => {
     setBriefPerson({ id: person.id, name: person.name });
@@ -144,7 +154,12 @@ export default function PeoplePage() {
             ) : data?.people.length === 0 ? (
               <tr>
                 <td colSpan={5} className={styles.emptyState}>
-                  No people found. Add someone to get started!
+                  <div className={styles.emptyStateContent}>
+                    <p>No people found. Add someone to get started.</p>
+                    <Button onClick={handleAdd}>
+                      <Plus size={16} /> Add Person
+                    </Button>
+                  </div>
                 </td>
               </tr>
             ) : (

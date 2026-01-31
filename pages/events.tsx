@@ -23,6 +23,7 @@ import {
 import { EventDialog } from "../components/EventDialog";
 import { useHighlightFromSearch } from "../helpers/useHighlightFromSearch";
 import { toast } from "sonner";
+import { useLocation } from "react-router-dom";
 import styles from "./events.module.css";
 
 export default function EventsPage() {
@@ -41,6 +42,7 @@ export default function EventsPage() {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<Selectable<Events> | null>(null);
+  const location = useLocation();
 
   const handleAdd = () => {
     setSelectedEvent(null);
@@ -51,6 +53,14 @@ export default function EventsPage() {
     setSelectedEvent(event);
     setIsDialogOpen(true);
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("new") === "1") {
+      setSelectedEvent(null);
+      setIsDialogOpen(true);
+    }
+  }, [location.search]);
 
   const handleDelete = (id: string) => {
     if (window.confirm("Are you sure you want to delete this event?")) {
@@ -128,7 +138,10 @@ export default function EventsPage() {
           ))
         ) : data?.events.length === 0 ? (
           <div className={styles.emptyState}>
-            <p>No events found.</p>
+            <p>No events found. Add a milestone or key moment.</p>
+            <Button onClick={handleAdd}>
+              <Plus size={16} /> Add Event
+            </Button>
           </div>
         ) : (
           data?.events.map((event) => (

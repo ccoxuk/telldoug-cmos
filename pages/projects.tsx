@@ -23,6 +23,7 @@ import {
 import { ProjectDialog } from "../components/ProjectDialog";
 import { useHighlightFromSearch } from "../helpers/useHighlightFromSearch";
 import { toast } from "sonner";
+import { useLocation } from "react-router-dom";
 import styles from "./projects.module.css";
 
 export default function ProjectsPage() {
@@ -45,6 +46,7 @@ export default function ProjectsPage() {
   const [selectedProject, setSelectedProject] = useState<Selectable<Projects> | null>(
     null,
   );
+  const location = useLocation();
 
   const handleAdd = () => {
     setSelectedProject(null);
@@ -55,6 +57,14 @@ export default function ProjectsPage() {
     setSelectedProject(project);
     setIsDialogOpen(true);
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("new") === "1") {
+      setSelectedProject(null);
+      setIsDialogOpen(true);
+    }
+  }, [location.search]);
 
   const handleDelete = (id: string) => {
     if (window.confirm("Are you sure you want to delete this project?")) {
@@ -147,6 +157,9 @@ export default function ProjectsPage() {
         ) : data?.projects.length === 0 ? (
           <div className={styles.emptyState}>
             <p>No projects found matching your filter.</p>
+            <Button onClick={handleAdd}>
+              <Plus size={16} /> Add Project
+            </Button>
             {statusFilter !== "all" && (
               <Button variant="link" onClick={() => setStatusFilter("all")}>
                 Clear filter

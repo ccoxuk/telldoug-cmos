@@ -111,7 +111,10 @@ export default function JobsPage() {
           ))
         ) : data?.jobs.length === 0 ? (
           <div className={styles.emptyState}>
-            <p>No jobs found.</p>
+            <p>No jobs found. Add your first role to start your timeline.</p>
+            <Button onClick={handleAdd}>
+              <Plus size={16} /> Add Job
+            </Button>
           </div>
         ) : (
           data?.jobs.map((job) => (

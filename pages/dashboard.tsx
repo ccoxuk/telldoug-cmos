@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Helmet } from "react-helmet";
-import { PenLine } from "lucide-react";
+import { PenLine, Plus } from "lucide-react";
 import { useDashboardStats } from "../helpers/useDashboardApi";
 import { DashboardReconnectWidget } from "../components/DashboardReconnectWidget";
 import { DashboardProductiveInteractionsWidget } from "../components/DashboardProductiveInteractionsWidget";
@@ -14,6 +14,12 @@ import { ContentDraftDialog } from "../components/ContentDraftDialog";
 import { CareerNarrativeDialog } from "../components/CareerNarrativeDialog";
 import { Button } from "../components/Button";
 import { Link } from "react-router-dom";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../components/DropdownMenu";
 import styles from "./dashboard.module.css";
 
 const AI_FEATURES_ENABLED = false;
@@ -51,7 +57,6 @@ export default function DashboardPage() {
 
   const counts = data?.counts ?? null;
   const showOnboarding = counts ? counts.jobs === 0 : false;
-  const primaryCtaLabel = showOnboarding ? "Add your first job" : "Add new job";
 
   return (
     <div className={styles.container}>
@@ -67,9 +72,38 @@ export default function DashboardPage() {
           </p>
         </div>
         <div className={styles.actions}>
-          <Button asChild>
-            <Link to="/jobs?new=1">{primaryCtaLabel}</Link>
-          </Button>
+          {!showOnboarding ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button>
+                  <Plus size={16} /> Add new
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <Link to="/jobs?new=1">Job</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/projects?new=1">Project</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/skills?new=1">Skill</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/people?new=1">Person</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/institutions?new=1">Institution</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/events?new=1">Event</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/relationships?new=1">Relationship</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : null}
           {AI_FEATURES_ENABLED ? (
             <Button
               variant="outline"
@@ -104,54 +138,37 @@ export default function DashboardPage() {
 
           <ul className={styles.onboardingList}>
             <li>Add your first job</li>
-            <li>Add a project you shipped</li>
+            <li>Attach 1 project to that job</li>
             <li>Add 3–5 skills as evidence</li>
           </ul>
 
           <div className={styles.onboardingActions}>
             <Button variant="outline" asChild>
-              <Link to="/projects">Add project</Link>
+              <Link to="/projects?new=1">Add project</Link>
             </Button>
             <Button variant="ghost" asChild>
-              <Link to="/people">Add person</Link>
+              <Link to="/people?new=1">Add person</Link>
             </Button>
             <Button variant="ghost" asChild>
-              <Link to="/institutions">Add institution</Link>
+              <Link to="/institutions?new=1">Add institution</Link>
             </Button>
           </div>
+          <div className={styles.onboardingNote}>Takes ~2 minutes to get started.</div>
         </section>
       ) : null}
 
+      <div className={styles.sectionHeading}>
+        <h2>Insights</h2>
+        <p>Recent signals and priorities from your career OS.</p>
+      </div>
+
       <div className={styles.widgetsGrid}>
-        <DashboardReconnectWidget
-          staleContacts={staleContacts}
-          isLoading={isFetching}
-        />
         <DashboardGoalsWidget
           goalsProgress={goalsProgress}
           isLoading={isFetching}
         />
-
         <DashboardSkillsGrowthWidget
           skillsGrowth={skillsGrowth}
-          isLoading={isFetching}
-        />
-        <DashboardFeedbackWidget
-          feedbackThemes={feedbackThemes}
-          isLoading={isFetching}
-        />
-
-        <DashboardTopConnectorsWidget
-          topConnectors={topConnectors}
-          isLoading={isFetching}
-        />
-        <DashboardProductiveInteractionsWidget
-          productiveInteractionTypes={productiveInteractionTypes}
-          isLoading={isFetching}
-        />
-
-        <DashboardContentWidget
-          contentActivity={contentActivity}
           isLoading={isFetching}
         />
         <DashboardRecentActivityWidget
@@ -159,7 +176,33 @@ export default function DashboardPage() {
           upcomingEvents={upcomingEvents}
           isLoading={isFetching}
         />
+        <DashboardReconnectWidget
+          staleContacts={staleContacts}
+          isLoading={isFetching}
+        />
       </div>
+
+      <details className={styles.moreInsights}>
+        <summary className={styles.moreInsightsSummary}>More insights</summary>
+        <div className={styles.widgetsGrid}>
+          <DashboardTopConnectorsWidget
+            topConnectors={topConnectors}
+            isLoading={isFetching}
+          />
+          <DashboardProductiveInteractionsWidget
+            productiveInteractionTypes={productiveInteractionTypes}
+            isLoading={isFetching}
+          />
+          <DashboardFeedbackWidget
+            feedbackThemes={feedbackThemes}
+            isLoading={isFetching}
+          />
+          <DashboardContentWidget
+            contentActivity={contentActivity}
+            isLoading={isFetching}
+          />
+        </div>
+      </details>
 
       {AI_FEATURES_ENABLED ? (
         <>

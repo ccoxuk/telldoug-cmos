@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Plus, MoreVertical, Trash, Edit, MapPin, Calendar as CalendarIcon, GraduationCap } from "lucide-react";
 import { useInstitutionsList, useDeleteInstitution } from "../helpers/useInstitutionsApi";
@@ -22,6 +22,7 @@ import {
 } from "../components/Select";
 import { InstitutionDialog } from "../components/InstitutionDialog";
 import { toast } from "sonner";
+import { useLocation } from "react-router-dom";
 import styles from "./institutions.module.css";
 
 export default function InstitutionsPage() {
@@ -31,6 +32,7 @@ export default function InstitutionsPage() {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedInstitution, setSelectedInstitution] = useState<Selectable<Institutions> | null>(null);
+  const location = useLocation();
 
   const handleAdd = () => {
     setSelectedInstitution(null);
@@ -41,6 +43,14 @@ export default function InstitutionsPage() {
     setSelectedInstitution(institution);
     setIsDialogOpen(true);
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("new") === "1") {
+      setSelectedInstitution(null);
+      setIsDialogOpen(true);
+    }
+  }, [location.search]);
 
   const handleDelete = (id: string) => {
     if (window.confirm("Are you sure you want to delete this institution?")) {
@@ -115,7 +125,10 @@ export default function InstitutionsPage() {
           ))
         ) : data?.institutions.length === 0 ? (
           <div className={styles.emptyState}>
-            <p>No institutions found.</p>
+            <p>No institutions found. Add your first school or employer.</p>
+            <Button onClick={handleAdd}>
+              <Plus size={16} /> Add Institution
+            </Button>
           </div>
         ) : (
           data?.institutions.map((inst) => (

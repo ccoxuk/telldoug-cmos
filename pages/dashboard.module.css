@@ -43,6 +43,23 @@
   }
 }
 
+.sectionHeading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.sectionHeading h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.sectionHeading p {
+  margin: 0;
+  color: var(--muted-foreground);
+}
+
 .onboarding {
   border: 1px solid var(--border);
   background: var(--surface);
@@ -93,4 +110,27 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--spacing-2);
+}
+
+.onboardingNote {
+  color: var(--muted-foreground);
+  font-size: 0.95rem;
+}
+
+.moreInsights {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-4);
+  background: var(--surface);
+}
+
+.moreInsightsSummary {
+  cursor: pointer;
+  font-weight: 600;
+  margin-bottom: var(--spacing-4);
+  list-style: none;
+}
+
+.moreInsightsSummary::-webkit-details-marker {
+  display: none;
 }

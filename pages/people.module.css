@@ -169,6 +169,13 @@
   color: var(--muted-foreground);
 }
 
+.emptyStateContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  align-items: center;
+}
+
 @keyframes highlightPulse {
   0% {
     background-color: color-mix(in srgb, var(--primary) 30%, transparent);
