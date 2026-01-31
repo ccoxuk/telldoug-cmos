@@ -23,7 +23,7 @@ This is the canonical, repeatable production setup. Only proceed after staging s
 - Run Command: `npm run migrate`
 
 ## Verification
-1. Automated: `npm run smoke:full -- https://<prod-url>`
+1. Automated: `npm run smoke:gate -- https://<prod-url>`
 2. Manual: follow `docs/RELEASE_CHECKLIST.md` smoke section
 
 ## Custom domain (telldoug.navigategov.uk)
@@ -36,7 +36,7 @@ This is the canonical, repeatable production setup. Only proceed after staging s
    - If Railway provides an A/AAAA/ALIAS target, follow that instruction exactly.
 5. Wait for DNS propagation, then verify:
    - `https://telldoug.navigategov.uk/_api/health` returns `{ ok: true, ... }`
-   - `npm run smoke:full -- https://telldoug.navigategov.uk`
+   - `npm run smoke:gate -- https://telldoug.navigategov.uk`
 
 ## Rollback discipline
 - If any prod smoke step fails: revert to the last known good commit and redeploy.

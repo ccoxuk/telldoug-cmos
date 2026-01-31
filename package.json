@@ -24,7 +24,8 @@
     "preinstall": "node audit-and-fix-package-json.js",
     "smoke:auth": "node scripts/auth-smoke.js",
     "smoke:crud": "node scripts/crud-smoke.js",
-    "smoke:full": "bash scripts/smoke-full.sh"
+    "smoke:full": "bash scripts/smoke-full.sh",
+    "smoke:gate": "bash scripts/smoke-gate.sh"
   },
   "dependencies": {
     "@hookform/resolvers": "^4.1.3",

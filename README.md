@@ -56,3 +56,8 @@ npm run smoke:curl -- https://<your-url>
 ```
 npm run smoke:full -- https://<your-url>
 ```
+
+## Deploy gate (commit + full smoke)
+```
+npm run smoke:gate -- https://<your-url>
+```
