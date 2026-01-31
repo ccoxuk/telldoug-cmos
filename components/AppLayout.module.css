@@ -77,13 +77,6 @@
   width: auto;
 }
 
-.brandName {
-  font-family: var(--font-family-heading);
-  font-weight: 700;
-  font-size: 1.25rem;
-  color: var(--sidebar-foreground);
-}
-
 .nav {
   flex: 1;
   padding: var(--spacing-4);

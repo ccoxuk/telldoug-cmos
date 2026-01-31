@@ -27,6 +27,7 @@ import { Button } from "./Button";
 import { QuickCaptureButton } from "./QuickCaptureButton";
 import { GlobalSearchPalette } from "./GlobalSearchPalette";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./Tooltip";
+import { BRAND_NAME, LOGO_URL } from "../helpers/brand";
 import styles from "./AppLayout.module.css";
 
 interface AppLayoutProps {
@@ -85,11 +86,10 @@ export default function AppLayout({ children }: AppLayoutProps) {
       <header className={styles.mobileHeader}>
         <div className={styles.logoContainer}>
           <img
-            src="https://assets.floot.app/79b82a6e-ad98-4978-87df-e15471f09436/fe204399-5542-4950-a373-e70feddbeee4.png"
-            alt="TellDoug Logo"
+            src={LOGO_URL}
+            alt={`${BRAND_NAME} Logo`}
             className={styles.logo}
           />
-          <span className={styles.brandName}>TellDoug</span>
         </div>
         <Button
           variant="ghost"
@@ -108,11 +108,10 @@ export default function AppLayout({ children }: AppLayoutProps) {
         <div className={styles.sidebarHeader}>
           <div className={styles.logoContainer}>
             <img
-              src="https://assets.floot.app/79b82a6e-ad98-4978-87df-e15471f09436/fe204399-5542-4950-a373-e70feddbeee4.png"
-              alt="TellDoug Logo"
+              src={LOGO_URL}
+              alt={`${BRAND_NAME} Logo`}
               className={styles.logo}
             />
-            <span className={styles.brandName}>TellDoug</span>
           </div>
           <Tooltip>
             <TooltipTrigger asChild>

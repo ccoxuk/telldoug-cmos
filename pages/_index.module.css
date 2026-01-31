@@ -29,14 +29,6 @@
   width: auto;
 }
 
-.brandName {
-  font-family: var(--font-family-heading);
-  font-weight: 700;
-  font-size: 1.5rem;
-  color: var(--primary);
-  letter-spacing: -0.02em;
-}
-
 .navLinks {
   display: flex;
   gap: var(--spacing-4);
