@@ -183,6 +183,31 @@ export async function handle(request: Request) {
       .limit(5)
       .execute();
 
+    const jobsCountQuery = db.selectFrom('jobs')
+      .select(db.fn.count('id').as('count'))
+      .where('jobs.userId', '=', userId)
+      .executeTakeFirst();
+
+    const projectsCountQuery = db.selectFrom('projects')
+      .select(db.fn.count('id').as('count'))
+      .where('projects.userId', '=', userId)
+      .executeTakeFirst();
+
+    const skillsCountQuery = db.selectFrom('skills')
+      .select(db.fn.count('id').as('count'))
+      .where('skills.userId', '=', userId)
+      .executeTakeFirst();
+
+    const peopleCountQuery = db.selectFrom('people')
+      .select(db.fn.count('id').as('count'))
+      .where('people.userId', '=', userId)
+      .executeTakeFirst();
+
+    const institutionsCountQuery = db.selectFrom('institutions')
+      .select(db.fn.count('id').as('count'))
+      .where('institutions.userId', '=', userId)
+      .executeTakeFirst();
+
     // Execute all queries
     const [
       staleContacts,
@@ -201,7 +226,12 @@ export async function handle(request: Request) {
       totalContentResult,
       contentByType,
       contentThisYearResult,
-      recentContent
+      recentContent,
+      jobsCountResult,
+      projectsCountResult,
+      skillsCountResult,
+      peopleCountResult,
+      institutionsCountResult
     ] = await Promise.all([
       staleContactsQuery.execute(),
       productiveInteractionTypesQuery.execute(),
@@ -219,7 +249,12 @@ export async function handle(request: Request) {
       totalContentQuery,
       contentByTypeQuery,
       contentThisYearQuery,
-      recentContentQuery
+      recentContentQuery,
+      jobsCountQuery,
+      projectsCountQuery,
+      skillsCountQuery,
+      peopleCountQuery,
+      institutionsCountQuery
     ]);
 
     // Process Stale Contacts
@@ -368,6 +403,13 @@ export async function handle(request: Request) {
     };
 
     const result: OutputType = {
+      counts: {
+        jobs: Number(jobsCountResult?.count || 0),
+        projects: Number(projectsCountResult?.count || 0),
+        skills: Number(skillsCountResult?.count || 0),
+        people: Number(peopleCountResult?.count || 0),
+        institutions: Number(institutionsCountResult?.count || 0)
+      },
       staleContacts: processedStaleContacts,
       productiveInteractionTypes: productiveTypes.map(t => ({
         type: t.type,

@@ -17,6 +17,7 @@ import {
 import { JobDialog } from "../components/JobDialog";
 import { useHighlightFromSearch } from "../helpers/useHighlightFromSearch";
 import { toast } from "sonner";
+import { useLocation } from "react-router-dom";
 import styles from "./jobs.module.css";
 
 export default function JobsPage() {
@@ -35,6 +36,7 @@ export default function JobsPage() {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedJob, setSelectedJob] = useState<Selectable<Jobs> | null>(null);
+  const location = useLocation();
 
   const handleAdd = () => {
     setSelectedJob(null);
@@ -45,6 +47,14 @@ export default function JobsPage() {
     setSelectedJob(job);
     setIsDialogOpen(true);
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("new") === "1") {
+      setSelectedJob(null);
+      setIsDialogOpen(true);
+    }
+  }, [location.search]);
 
   const handleDelete = (id: string) => {
     if (window.confirm("Are you sure you want to delete this job?")) {

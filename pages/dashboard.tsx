@@ -13,6 +13,7 @@ import { DashboardContentWidget } from "../components/DashboardContentWidget";
 import { ContentDraftDialog } from "../components/ContentDraftDialog";
 import { CareerNarrativeDialog } from "../components/CareerNarrativeDialog";
 import { Button } from "../components/Button";
+import { Link } from "react-router-dom";
 import styles from "./dashboard.module.css";
 
 const AI_FEATURES_ENABLED = false;
@@ -48,6 +49,10 @@ export default function DashboardPage() {
     thisYearCount: 0,
   };
 
+  const counts = data?.counts ?? null;
+  const showOnboarding = counts ? counts.jobs === 0 : false;
+  const primaryCtaLabel = showOnboarding ? "Add your first job" : "Add new job";
+
   return (
     <div className={styles.container}>
       <Helmet>
@@ -61,8 +66,11 @@ export default function DashboardPage() {
             Here's what's happening in your career OS.
           </p>
         </div>
-        {AI_FEATURES_ENABLED ? (
-          <div className={styles.actions}>
+        <div className={styles.actions}>
+          <Button asChild>
+            <Link to="/jobs?new=1">{primaryCtaLabel}</Link>
+          </Button>
+          {AI_FEATURES_ENABLED ? (
             <Button
               variant="outline"
               onClick={() => setNarrativeDialogOpen(true)}
@@ -70,13 +78,49 @@ export default function DashboardPage() {
               <PenLine size={16} />
               Career Narrative
             </Button>
+          ) : null}
+          {AI_FEATURES_ENABLED ? (
             <Button onClick={() => setDraftDialogOpen(true)}>
               <PenLine size={16} />
               Draft Content
             </Button>
-          </div>
-        ) : null}
+          ) : null}
+        </div>
       </header>
+
+      {showOnboarding ? (
+        <section className={styles.onboarding}>
+          <div className={styles.onboardingHeader}>
+            <div>
+              <h2 className={styles.onboardingTitle}>Start your career timeline</h2>
+              <p className={styles.onboardingSubtitle}>
+                Add a few core items to unlock a complete, searchable career OS.
+              </p>
+            </div>
+            <Button asChild>
+              <Link to="/jobs?new=1">Add your first job</Link>
+            </Button>
+          </div>
+
+          <ul className={styles.onboardingList}>
+            <li>Add your first job</li>
+            <li>Add a project you shipped</li>
+            <li>Add 3–5 skills as evidence</li>
+          </ul>
+
+          <div className={styles.onboardingActions}>
+            <Button variant="outline" asChild>
+              <Link to="/projects">Add project</Link>
+            </Button>
+            <Button variant="ghost" asChild>
+              <Link to="/people">Add person</Link>
+            </Button>
+            <Button variant="ghost" asChild>
+              <Link to="/institutions">Add institution</Link>
+            </Button>
+          </div>
+        </section>
+      ) : null}
 
       <div className={styles.widgetsGrid}>
         <DashboardReconnectWidget
