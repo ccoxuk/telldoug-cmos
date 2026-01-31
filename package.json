@@ -22,7 +22,9 @@
     "quality": "npm run typecheck && npm run lint && npm run test:run",
     "audit-pkg": "node audit-and-fix-package-json.js",
     "preinstall": "node audit-and-fix-package-json.js",
-    "smoke:auth": "node scripts/auth-smoke.js"
+    "smoke:auth": "node scripts/auth-smoke.js",
+    "smoke:crud": "node scripts/crud-smoke.js",
+    "smoke:full": "bash scripts/smoke-full.sh"
   },
   "dependencies": {
     "@hookform/resolvers": "^4.1.3",
