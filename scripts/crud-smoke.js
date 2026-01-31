@@ -76,6 +76,28 @@ const assertNotInList = (label, list, id) => {
   pass(label);
 };
 
+const assertSearchResults = (results) => {
+  if (!Array.isArray(results) || results.length === 0) {
+    fail("global search results", "Expected at least one result");
+  }
+
+  const hasRequiredFields = results.every(
+    (item) => item && item.entityType && item.id && item.title && item.url
+  );
+  if (!hasRequiredFields) {
+    fail("global search result shape", JSON.stringify(results, null, 2));
+  }
+
+  const types = new Set(results.map((item) => item.entityType));
+  if (!types.has("job") && !types.has("project")) {
+    fail(
+      "global search entity types",
+      `Expected at least one job or project. Got: ${Array.from(types).join(", ")}`
+    );
+  }
+  pass("global search result shape + types");
+};
+
 console.log(`Running CRUD smoke against: ${baseUrl}`);
 
 // Register
@@ -315,8 +337,9 @@ const relationship = { id: "" };
 
 // Global search
 {
-  const { res, text } = await getJson("/_api/search/global?query=Smoke", sessionCookie);
+  const { res, text, data } = await getJson("/_api/search/global?query=Smoke", sessionCookie);
   expectOk("global search", res, text);
+  assertSearchResults(data?.results);
   pass("global search");
 }
 
