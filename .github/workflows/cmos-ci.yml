@@ -7,6 +7,10 @@ on:
 jobs:
   build:
     runs-on: self-hosted
+    timeout-minutes: 20
+    concurrency:
+      group: cmos-ci-${{ github.ref }}
+      cancel-in-progress: true
     services:
       postgres:
         image: postgres:15
@@ -70,26 +74,38 @@ jobs:
         run: npm run migrate
 
       - name: Full smoke (auth + curl + CRUD)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
+          set -euo pipefail
           LOG_FILE=/tmp/server.log
+          BASE_URL=http://localhost:3333
           PORT=3333 npm run start >"${LOG_FILE}" 2>&1 &
           SERVER_PID=$!
-          trap 'if kill -0 "${SERVER_PID}" 2>/dev/null; then kill "${SERVER_PID}"; fi' EXIT
+          cleanup() {
+            code=$?
+            if [ $code -ne 0 ]; then
+              echo "--- server log ---" >&2
+              cat "${LOG_FILE}" >&2 || true
+            fi
+            if kill -0 "${SERVER_PID}" 2>/dev/null; then
+              kill "${SERVER_PID}" || true
+            fi
+            exit $code
+          }
+          trap cleanup EXIT
 
           for i in {1..60}; do
             if ! kill -0 "${SERVER_PID}" 2>/dev/null; then
               echo "Server exited before smoke tests." >&2
-              echo "--- server log ---" >&2
-              cat "${LOG_FILE}" >&2 || true
               exit 1
             fi
-            if curl -fsS http://localhost:3333/_api/health > /dev/null; then
+            if curl -fsS "${BASE_URL}/_api/health" > /dev/null; then
               break
             fi
             sleep 1
           done
 
-          BASE_URL=http://localhost:3333 npm run smoke:full
+          BASE_URL="${BASE_URL}" npm run smoke:full
 
       - name: Privacy checks
         run: npm run privacy:check
