@@ -73,8 +73,7 @@
 }
 
 .logo {
-  height: 40px;
-  width: auto;
+  display: block;
 }
 
 .nav {
@@ -162,6 +161,13 @@
   max-width: 1200px;
   margin: 0 auto;
   height: 100%;
+}
+
+.footer {
+  margin-top: var(--spacing-12);
+  padding-bottom: var(--spacing-8);
+  display: flex;
+  justify-content: center;
 }
 
 @media (min-width: 768px) {

@@ -4,9 +4,12 @@ import { Button } from "../components/Button";
 import { ArrowRight, Users, Briefcase, Network } from "lucide-react";
 import { Helmet } from "react-helmet";
 import styles from "./_index.module.css";
-import { BRAND_NAME, LOGO_URL } from "../helpers/brand";
+import { Logo } from "../components/Logo";
+import { useSession } from "../helpers/useAuthApi";
 
 export default function LandingPage() {
+  const { data } = useSession({ retry: false });
+  const isAuthed = Boolean(data?.user);
   return (
     <div className={styles.container}>
       <Helmet>
@@ -19,15 +22,13 @@ export default function LandingPage() {
 
       <nav className={styles.nav}>
         <div className={styles.logoContainer}>
-          <img
-            src={LOGO_URL}
-            alt={`${BRAND_NAME} Logo`}
-            className={styles.logo}
-          />
+          <Logo variant="dog" className={styles.logo} />
         </div>
         <div className={styles.navLinks}>
           <Button variant="ghost" asChild>
-            <Link to="/dashboard">Log In</Link>
+            <Link to={isAuthed ? "/account" : "/dashboard"}>
+              {isAuthed ? "Account" : "Log In"}
+            </Link>
           </Button>
           <Button asChild>
             <Link to="/dashboard">Get Started</Link>
@@ -112,6 +113,7 @@ export default function LandingPage() {
       </main>
 
       <footer className={styles.footer}>
+        <Logo variant="lockup" className={styles.footerLogo} />
         <p>&copy; {new Date().getFullYear()} TellDoug. All rights reserved.</p>
       </footer>
     </div>

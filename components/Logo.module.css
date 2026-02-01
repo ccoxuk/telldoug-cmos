@@ -1,0 +1,36 @@
+.wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: left center;
+}
+
+.dog {
+  width: 52px;
+  height: 52px;
+}
+
+.lockup {
+  width: 170px;
+  height: 52px;
+}
+
+@media (max-width: 640px) {
+  .dog {
+    width: 42px;
+    height: 42px;
+  }
+
+  .lockup {
+    width: 140px;
+    height: 42px;
+  }
+}

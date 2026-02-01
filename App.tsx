@@ -37,6 +37,8 @@ import Page_16 from "./pages/interactions.tsx";
 import PageLayout_16 from "./pages/interactions.pageLayout.tsx";
 import Page_17 from "./pages/relationships.tsx";
 import PageLayout_17 from "./pages/relationships.pageLayout.tsx";
+import Page_18 from "./pages/account.tsx";
+import PageLayout_18 from "./pages/account.pageLayout.tsx";
 
 if (!window.requestIdleCallback) {
   window.requestIdleCallback = (cb) => {
@@ -51,7 +53,7 @@ if (!window.requestIdleCallback) {
 
 import "./base.css";
 
-const fileNameToRoute = new Map([["./pages/jobs.tsx","/jobs"],["./pages/goals.tsx","/goals"],["./pages/_index.tsx","/"],["./pages/events.tsx","/events"],["./pages/import.tsx","/import"],["./pages/people.tsx","/people"],["./pages/skills.tsx","/skills"],["./pages/content.tsx","/content"],["./pages/feedback.tsx","/feedback"],["./pages/learning.tsx","/learning"],["./pages/projects.tsx","/projects"],["./pages/timeline.tsx","/timeline"],["./pages/dashboard.tsx","/dashboard"],["./pages/achievements.tsx","/achievements"],["./pages/compensation.tsx","/compensation"],["./pages/institutions.tsx","/institutions"],["./pages/interactions.tsx","/interactions"],["./pages/relationships.tsx","/relationships"]]);
+const fileNameToRoute = new Map([["./pages/jobs.tsx","/jobs"],["./pages/goals.tsx","/goals"],["./pages/_index.tsx","/"],["./pages/events.tsx","/events"],["./pages/import.tsx","/import"],["./pages/people.tsx","/people"],["./pages/skills.tsx","/skills"],["./pages/content.tsx","/content"],["./pages/feedback.tsx","/feedback"],["./pages/learning.tsx","/learning"],["./pages/projects.tsx","/projects"],["./pages/timeline.tsx","/timeline"],["./pages/dashboard.tsx","/dashboard"],["./pages/achievements.tsx","/achievements"],["./pages/compensation.tsx","/compensation"],["./pages/institutions.tsx","/institutions"],["./pages/interactions.tsx","/interactions"],["./pages/relationships.tsx","/relationships"],["./pages/account.tsx","/account"]]);
 const fileNameToComponent = new Map([
     ["./pages/jobs.tsx", Page_0],
 ["./pages/goals.tsx", Page_1],
@@ -69,8 +71,9 @@ const fileNameToComponent = new Map([
 ["./pages/achievements.tsx", Page_13],
 ["./pages/compensation.tsx", Page_14],
 ["./pages/institutions.tsx", Page_15],
-["./pages/interactions.tsx", Page_16],
+    ["./pages/interactions.tsx", Page_16],
 ["./pages/relationships.tsx", Page_17],
+["./pages/account.tsx", Page_18],
   ]);
 
 function makePageRoute(filename: string) {
@@ -169,6 +172,7 @@ export function App() {
 "./pages/institutions.tsx": PageLayout_15,
 "./pages/interactions.tsx": PageLayout_16,
 "./pages/relationships.tsx": PageLayout_17,
+"./pages/account.tsx": PageLayout_18,
 }), fileNameToRoute, makePageRoute })} 
           <Route path="*" element={<NotFound />} />
         </Routes>

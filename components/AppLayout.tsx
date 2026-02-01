@@ -22,12 +22,13 @@ import {
   FileEdit,
   Upload,
   Search,
+  UserCircle,
 } from "lucide-react";
 import { Button } from "./Button";
 import { QuickCaptureButton } from "./QuickCaptureButton";
 import { GlobalSearchPalette } from "./GlobalSearchPalette";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./Tooltip";
-import { BRAND_NAME, LOGO_URL } from "../helpers/brand";
+import { Logo } from "./Logo";
 import styles from "./AppLayout.module.css";
 
 interface AppLayoutProps {
@@ -89,7 +90,10 @@ export default function AppLayout({ children }: AppLayoutProps) {
     },
     {
       title: "System",
-      items: [{ path: "/import", label: "Import", icon: Upload }],
+      items: [
+        { path: "/account", label: "Account", icon: UserCircle },
+        { path: "/import", label: "Import", icon: Upload },
+      ],
     },
   ];
 
@@ -119,11 +123,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
       {/* Mobile Header */}
       <header className={styles.mobileHeader}>
         <div className={styles.logoContainer}>
-          <img
-            src={LOGO_URL}
-            alt={`${BRAND_NAME} Logo`}
-            className={styles.logo}
-          />
+          <Logo variant="dog" className={styles.logo} />
         </div>
         <Button
           variant="ghost"
@@ -141,11 +141,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
       >
         <div className={styles.sidebarHeader}>
           <div className={styles.logoContainer}>
-            <img
-              src={LOGO_URL}
-              alt={`${BRAND_NAME} Logo`}
-              className={styles.logo}
-            />
+            <Logo variant="dog" className={styles.logo} />
           </div>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -208,6 +204,9 @@ export default function AppLayout({ children }: AppLayoutProps) {
       {/* Main Content */}
       <main className={styles.main}>
         <div className={styles.contentContainer}>{children}</div>
+        <footer className={styles.footer}>
+          <Logo variant="lockup" />
+        </footer>
       </main>
 
       {/* Overlay for mobile menu */}

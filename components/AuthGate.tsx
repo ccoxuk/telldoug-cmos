@@ -2,6 +2,7 @@ import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useLogin, useRegister, useSession } from "../helpers/useAuthApi";
 import { Input } from "./Input";
 import { Button } from "./Button";
+import { BRAND_NAME, LOGO_DOG_URL } from "../helpers/brand";
 import styles from "./AuthGate.module.css";
 
 export function AuthGate({ children }: { children: ReactNode }) {
@@ -12,6 +13,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const isAuthed = Boolean(data?.user);
 
@@ -21,6 +23,14 @@ export function AuthGate({ children }: { children: ReactNode }) {
       setPassword("");
     }
   }, [isAuthed]);
+
+  useEffect(() => {
+    if (!showSuccess) return;
+    const timer = window.setTimeout(() => {
+      setShowSuccess(false);
+    }, 1200);
+    return () => window.clearTimeout(timer);
+  }, [showSuccess]);
 
   const submitDisabled = useMemo(() => {
     return !email.trim() || password.length < 8 || login.isPending || register.isPending;
@@ -35,13 +45,32 @@ export function AuthGate({ children }: { children: ReactNode }) {
       } else {
         await register.mutateAsync({ email, password });
       }
+      setShowSuccess(true);
     } catch (error) {
       const message = error instanceof Error ? error.message : "Authentication failed";
       setErrorMessage(message);
     }
   };
 
-  if (isAuthed) return <>{children}</>;
+  if (isAuthed) {
+    return (
+      <>
+        {children}
+        {showSuccess ? (
+          <div className={styles.successOverlay} role="status" aria-live="polite">
+            <div className={styles.successCard}>
+              <img
+                src={LOGO_DOG_URL}
+                alt={`${BRAND_NAME} Dog`}
+                className={styles.successDog}
+              />
+              <div className={styles.successText}>Welcome back</div>
+            </div>
+          </div>
+        ) : null}
+      </>
+    );
+  }
 
   if (isLoading) {
     return (
